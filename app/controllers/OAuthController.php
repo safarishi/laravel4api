@@ -10,7 +10,7 @@ class OAuthController extends ApiController
     public function __construct(Authorizer $authorizer)
     {
         $this->authorizer = $authorizer;
-        $this->afterFilter('disconnect:major', ['only' => ['postAccessToken']]);
+        // $this->afterFilter('disconnect:major', ['only' => ['postAccessToken']]);
     }
 
     public function postAccessToken()

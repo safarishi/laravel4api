@@ -5,13 +5,7 @@ class CommonController extends ApiController
 
     const JOURNAL_FLAG = 'journal';
 
-    const RESOURCE_URL = 'http://www.csapchina.com';
-
     protected $userId;
-
-    protected $userIp;
-
-    protected $type;
 
     /**
      * [$flag description]
@@ -28,18 +22,6 @@ class CommonController extends ApiController
     protected function dbRepository($connection, $name)
     {
         return DB::connection($connection)->table($name);
-    }
-
-    /**
-     * common logic for journal
-     *
-     * @return object
-     */
-    protected function journal()
-    {
-        return DB::table('qikan')
-            ->select('id', 'thumbnail as thumbnail_url', 'name', 'qname as journal_date')
-            ->where('display', 1);
     }
 
     /**
@@ -62,40 +44,22 @@ class CommonController extends ApiController
         return $uid;
     }
 
-    /**
-     * 判断用户是否收藏期刊
-     *
-     * @param  string $uid       用户id
-     * @param  string $journalId 期刊id
-     * @return boolean
-     */
-    protected function checkUserStar($uid, $journalId)
-    {
-        $this->models['star'] = $this->dbRepository('major', 'star');
+    // /**
+    //  * 判断用户是否收藏期刊
+    //  *
+    //  * @param  string $uid       用户id
+    //  * @param  string $journalId 期刊id
+    //  * @return boolean
+    //  */
+    // protected function checkUserStar($uid, $journalId)
+    // {
+    //     $this->models['star'] = $this->dbRepository('major', 'star');
 
-        return $this->models['star']
-            ->where('user_id', $uid)
-            ->where('journal_id', $journalId)
-            ->exists();
-    }
-
-    /**
-     * 判断用户是否点赞
-     *
-     * @param  string $uid       用户id
-     * @param  string $commentId 评论id
-     * @return boolean
-     */
-    protected function checkUserFavour($uid, $commentId)
-    {
-        $this->models['favour'] = $this->dbRepository('major', 'favour');
-
-        return $this->models['favour']
-            ->where('origin_type', $this->type)
-            ->where('user_id', $uid)
-            ->where('journal_comment_id', $commentId)
-            ->exists();
-    }
+    //     return $this->models['star']
+    //         ->where('user_id', $uid)
+    //         ->where('journal_id', $journalId)
+    //         ->exists();
+    // }
 
     /**
      * [getOwner description]
@@ -111,109 +75,6 @@ class CommonController extends ApiController
         }
         // 返回匿名用户信息
         return $this->anonymousUser();
-    }
-
-    /**
-     * 用户信息统一返回
-     *
-     * @return todo
-     */
-    protected function user()
-    {
-        return DB::table('user')
-            ->select('avatar_url', 'name as display_name', 'email', 'address');
-    }
-
-    private function anonymousUser()
-    {
-        $area = MultiplexController::getArea($this->userIp);
-
-        return [
-            'avatar_url' => Config::get('imagecache::paths.avatar_url_prefix').'/default.png',
-            'name'       => '来自'.$area.'的用户'
-        ];
-    }
-
-    protected function getOriginType()
-    {
-        $originType = 'csp';
-
-        if (Input::get('type') === 'c') {
-            $originType = 'csi';
-        }
-
-        return $originType;
-    }
-
-    /**
-     * 更新评论被点赞数量
-     *
-     * @param  string $id 评论id
-     * @return void
-     */
-    protected function updateCommentFavours($id)
-    {
-        $connection = 'major';
-        $table = 'journal_comment';
-
-        if ($this->type === 'c') {
-            $connection = 'secondary';
-            $table = 'article_comment';
-        }
-
-        $comment = $this->dbRepository($connection, $table);
-
-        $delta = ($this->flag === '+') ? 1 : -1;
-
-        $comment->where('id', $id)
-            // increment 也可以来减少
-            ->increment('favours', $delta, array('updated_at' => date('Y-m-d H:i:s')));
-    }
-
-    protected function processCommentResponse($data)
-    {
-        foreach ($data as $value) {
-            $this->userId = $value->user_id;
-            $this->userIp = $value->user_ip;
-            $value->user  = $this->getOwner();
-
-            $value->journal = ($this->flag === self::JOURNAL_FLAG) ?
-                $this->journal()->find($value->journal_id) :
-                $this->journal;
-
-            $value->relies = $this->getReply($value->id);
-        }
-
-        foreach ($data as $value) {
-            unset($value->user_id, $value->user_ip, $value->journal_id);
-        }
-
-        return $data;
-    }
-
-    /**
-     * [getReply description]
-     * @param  int $id 评论id
-     * @return array
-     */
-    protected function getReply($id)
-    {
-        $replies = $this->dbRepository('major', 'reply')
-            ->select('id', 'created_at', 'content', 'user_id', 'user_ip')
-            ->where('journal_comment_id', $id)
-            ->orderBy('created_at', 'desc')
-            ->take(2)
-            ->get();
-
-        foreach ($replies as $reply) {
-            $this->userId = $reply->user_id;
-            $this->userIp = $reply->user_ip;
-            $reply->user  = $this->getOwner();
-
-            unset($reply->user_id, $reply->user_ip);
-        }
-
-        return $replies;
     }
 
     /**
