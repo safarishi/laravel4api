@@ -1,0 +1,27 @@
+<ion-view>
+    <ion-side-menus enable-menu-with-back-views="false">
+        <ion-side-menu-content>
+            <!--内容-->
+            <div ng-if="contentShow">
+                <ion-nav-view name="content"></ion-nav-view>
+            </div>
+            <!--头部-->
+            <div ng-if="headerShow">
+                <ion-nav-view name="header"></ion-nav-view>
+            </div>
+            <!--页脚-->
+            <div ng-controller="footerController">
+                <ion-footer-bar ng-if="footerShow" class="footer bar-assertive" keyboard-attach ng-show="footerShow" ng-class="fooyerStyle" ng-style="footerStyle">
+                    <ion-nav-view name="footer"></ion-nav-view>
+                </ion-footer-bar>
+            </div>
+            <!--遮罩层-->
+            <div class="footerMaskLayer" ng-controller="footerController" ng-show="footerMaskLayerShow"></div>
+            <div class="slideMask" ng-show="slideMenu" on-drag-end="slideMenuHide()" ng-click="slideHide()"></div>
+        </ion-side-menu-content>
+        <!--左侧滑-->
+        <ion-side-menu side="left" width="{{sideWidh}}" is-enabled="!leftButtonShow">
+            <ion-nav-view name="sideMenu"></ion-nav-view>
+        </ion-side-menu>
+    </ion-side-menus>
+</ion-view>

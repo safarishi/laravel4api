@@ -1,0 +1,12 @@
+<div>
+    <div ng-repeat="newMain in newsMain" data-id="{{newMain.Id}}"
+         class="newsBoxStyle" ng-class="newsBoxStyle" ui-sref="main.mainText" ng-click="textNews(newMain.Id)">
+        <div>
+            <img ng-src="{{newMain.PicName}}" class="homeNewImg" draggable="false" ng-if="newsImgShow">
+            <div ng-class="{'homeNewMain': newsImgShow == true,'textNewMain': newsImgShow == false}">
+                <h2 class="homeNewTitle">{{newMain.Title}}</h2>
+                <p class="homeNewAuthor"><span ng-if="originShow">来源：<span>{{newMain.Source}}</span></span> &nbsp;作者：<span>{{newMain.Author}}</span> &nbsp;<span>{{newMain.PublishUtcDate}}</span></p>
+            </div>
+        </div>
+    </div>
+</div>

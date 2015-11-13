@@ -1,0 +1,15 @@
+<ion-content padding="false" scroll="false" overflow-scroll="false" has-bouncing="true">
+    <ion-scroll class="scrollHeight scrollColor" zooming="false" direction="y" scrollbar-x ='true' scrollbar-y ='true' paging="false"
+                delegate-handle="mainScroll" ng-controller="homeController">
+        <div class="bookShelf">
+            <!--<ion-list>-->
+                <div collection-repeat="book in books" class="noBorder"
+                          collection-item-width="97%" collection-item-height="40%" ng-style="{'z-index': 10000 - $index}">
+                    <img ng-click="newsId(bookImg.id)" ui-sref="main.mainText" ng-repeat="bookImg in book" ng-src="{{bookImg.thumbnail_url}}"
+                          draggable="false" ng-class="'img' + ($index + 1)" class="imgBook bookShelfHeight">
+                    <img src="mycompass/images/bookShelf.png" draggable="false" class="bottomShelf" ng-style="shelfTop">
+                </div>
+            <!--</ion-list>-->
+        </div>
+    </ion-scroll>
+</ion-content>

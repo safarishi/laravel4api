@@ -1,0 +1,38 @@
+<ion-content padding="false" scroll="false" overflow-scroll="true" has-bouncing="false">
+    <!--阅读模式-->
+    <ion-content ng-if="readIng"
+                 class="reading scrollHeight"
+                 padding="false"
+                 scroll="false"
+                 overflow-scroll="true"
+                 has-bouncing="false">
+        <span class="ion-ios-close-outline end" on-touch="close()"></span>
+        <ion-scroll class="scrollHeight scroll1"
+                    scrollbar-x="true"
+                    scrollbar-y="true"
+                    direction="xy"
+                    paging="false"
+                    zooming="true"
+                    min-zoom="1"
+                    max-zoom="5">
+            <ng-onload picture-src="readIngUrl"></ng-onload>
+            <div class="footerBox"></div>
+        </ion-scroll>
+        <to-top listener="scroll1" ng-show="toTopShow"></to-top>
+    </ion-content>
+    <!--内容-->
+    <ion-scroll class="scrollHeight newsBoxImg scroll2" direction="y" paging="false" zooming="false"
+                delegate-handle="mainScroll">
+        <img src="svg/Loading..._files/loading-spin.svg"
+             ng-show="false"
+             draggable="false">
+        <ng-onload collection-repeat="book in booksText"
+                   collection-item-width="100%"
+                   collection-item-height="100%"
+                   picture-src="book.url"
+                   ng-click="enlarge(book.url)">
+        </ng-onload>
+        <div class="footerBox"></div>
+    </ion-scroll>
+    <to-top listener="scroll2" ng-show="toTopShow"></to-top>
+</ion-content>
