@@ -15,6 +15,7 @@ return array(
 	|
 	*/
 
+	// 'driver' => 'eloquent',
 	'driver' => 'custom_eloquent',
 
 	/*

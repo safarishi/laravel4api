@@ -11,6 +11,7 @@ return [
     | when set to default, it uses whatever connection you specified in your laravel db config.
     |
     */
+     // 'database' => 'default',
     'database' => 'major',
 
     /*

@@ -13,6 +13,10 @@
 
 Route::get('/', function()
 {
+    /*
+        注意：你的默认的数据库连接
+        oauth
+     */
     return 'laravel 4 app';
     return View::make('index');
 });
